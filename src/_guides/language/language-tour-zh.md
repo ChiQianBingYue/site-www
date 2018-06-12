@@ -1967,9 +1967,11 @@ It's just part of the Dart syntax. -->
 [Classes](#classes). -->
 
 
-## Control flow statements
+## 流程控制
+<!-- ## Control flow statements -->
 
-You can control the flow of your Dart code using any of the following:
+您可以使用下列的写法来控制Dart语言的运行流程
+<!-- You can control the flow of your Dart code using any of the following: -->
 
 -   `if` and `else`
 
@@ -1983,14 +1985,17 @@ You can control the flow of your Dart code using any of the following:
 
 -   `assert`
 
-You can also affect the control flow using `try-catch` and `throw`, as
-explained in [Exceptions](#exceptions).
+您也可以使用`try-catch`和`throw`来影响控制流程，详情请查看[异常Exceptions](#exceptions)。
+<!-- You can also affect the control flow using `try-catch` and `throw`, as
+explained in [Exceptions](#exceptions). -->
 
 
-### If and else
+### If 和 else
+<!-- ### If and else -->
 
-Dart supports `if` statements with optional `else` statements, as the
-next sample shows. Also see [conditional expressions](#conditional-expressions).
+如下例所示，Dart支持了`if` 语句和可选的`else`语句。具体可查看[条件表达式conditional-expressions](#conditional-expressions)
+<!-- Dart supports `if` statements with optional `else` statements, as the
+next sample shows. Also see [conditional expressions](#conditional-expressions). -->
 
 <?code-excerpt "misc/lib/language_tour/control_flow.dart (if-else)"?>
 {% prettify dart %}
@@ -2003,13 +2008,16 @@ if (isRaining()) {
 }
 {% endprettify %}
 
-Remember, unlike JavaScript, Dart treats all values other than `true` as
-`false`. See [Booleans](#booleans) for more information.
+和JavaScript不同，条件语句必须使用boolean类型的值，其他的都不行。具体请查看[Booleans](#booleans)。
+<!-- Unlike JavaScript, conditions must use boolean values, nothing else. See
+[Booleans](#booleans) for more information. -->
 
 
-### For loops
+### for 循环
+<!-- ### For loops -->
 
-You can iterate with the standard `for` loop. For example:
+您可以使用常见的`for`语句来进行遍历。如下所示：
+<!-- You can iterate with the standard `for` loop. For example: -->
 
 <?code-excerpt "misc/test/language_tour/control_flow_test.dart (for)"?>
 {% prettify dart %}
@@ -2019,8 +2027,9 @@ for (var i = 0; i < 5; i++) {
 }
 {% endprettify %}
 
-Closures inside of Dart’s `for` loops capture the _value_ of the index,
-avoiding a common pitfall found in JavaScript. For example, consider:
+在Dart`for`语句中的闭包是能够提取到_变量_的序号（index）的，这避免了javas中常见的一个纰漏。如下所示，考虑代码：
+<!-- Closures inside of Dart’s `for` loops capture the _value_ of the index,
+avoiding a common pitfall found in JavaScript. For example, consider: -->
 
 <?code-excerpt "misc/test/language_tour/control_flow_test.dart (for-and-closures)"?>
 {% prettify dart %}
@@ -2031,20 +2040,23 @@ for (var i = 0; i < 2; i++) {
 callbacks.forEach((c) => c());
 {% endprettify %}
 
-The output is `0` and then `1`, as expected. In contrast, the example
-would print `2` and then `2` in JavaScript.
+它的输出代码首先是`0`，紧跟着`1`。与之相对的是在JavaScript中，两次的输出都是是`2`。
+<!-- The output is `0` and then `1`, as expected. In contrast, the example
+would print `2` and then `2` in JavaScript. -->
 
-If the object that you are iterating over is an Iterable, you can use the
+如果您遍历的对象是可遍历对象，那么您就可以使用[forEach()][]方法。如果您不需要当前遍历的序号和计数器，那使用`forEach()`是一个很好的选择：
+<!-- If the object that you are iterating over is an Iterable, you can use the
 [forEach()][] method. Using `forEach()` is a good option if you don’t need to
-know the current iteration counter:
+know the current iteration counter: -->
 
 <?code-excerpt "misc/lib/language_tour/control_flow.dart (forEach)"?>
 {% prettify dart %}
 candidates.forEach((candidate) => candidate.interview());
 {% endprettify %}
 
-Iterable classes such as List and Set also support the `for-in` form of
-[iteration](/guides/libraries/library-tour#iteration):
+可遍历(*Iterable*)类，比如像List和Set同样也支持了`for-in`的[遍历iteration](/guides/libraries/library-tour#iteration)表达式。
+<!-- Iterable classes such as List and Set also support the `for-in` form of
+[iteration](/guides/libraries/library-tour#iteration): -->
 
 <?code-excerpt "misc/test/language_tour/control_flow_test.dart (collection)"?>
 {% prettify dart %}
@@ -2055,9 +2067,11 @@ for (var x in collection) {
 {% endprettify %}
 
 
-### While and do-while
+### While 和 do-while
+<!-- ### While and do-while -->
 
-A `while` loop evaluates the condition before the loop:
+一个`while`循环会在每轮循环前查看条件(*condition*)：
+<!-- A `while` loop evaluates the condition before the loop: -->
 
 <?code-excerpt "misc/lib/language_tour/control_flow.dart (while)"?>
 {% prettify dart %}
@@ -2066,7 +2080,8 @@ while (!isDone()) {
 }
 {% endprettify %}
 
-A `do`-`while` loop evaluates the condition *after* the loop:
+一个`do`-`while`循环会在每次循环后查看条件：
+<!-- A `do`-`while` loop evaluates the condition *after* the loop: -->
 
 <?code-excerpt "misc/lib/language_tour/control_flow.dart (do-while)"?>
 {% prettify dart %}
@@ -2076,9 +2091,11 @@ do {
 {% endprettify %}
 
 
-### Break and continue
+### Break 和 continue
+<!-- ### Break and continue -->
 
-Use `break` to stop looping:
+使用`break`来终止循环：
+<!-- Use `break` to stop looping: -->
 
 <?code-excerpt "misc/lib/language_tour/control_flow.dart (while-break)"?>
 {% prettify dart %}
@@ -2088,7 +2105,8 @@ while (true) {
 }
 {% endprettify %}
 
-Use `continue` to skip to the next loop iteration:
+使用`continue`来跳过当前循环，直接执行下一个循环：
+<!-- Use `continue` to skip to the next loop iteration: -->
 
 <?code-excerpt "misc/lib/language_tour/control_flow.dart (for-continue)"?>
 {% prettify dart %}
@@ -2101,8 +2119,9 @@ for (int i = 0; i < candidates.length; i++) {
 }
 {% endprettify %}
 
-You might write that example differently if you’re using an
-[Iterable][] such as a list or set:
+如果您遍历的对象是一个[可遍历Iterable][]对象，比如list或者set，那么还有另一种方式完成上面的代码：
+<!-- You might write that example differently if you’re using an
+[Iterable][] such as a list or set: -->
 
 <?code-excerpt "misc/lib/language_tour/control_flow.dart (where)"?>
 {% prettify dart %}
@@ -2112,25 +2131,33 @@ candidates
 {% endprettify %}
 
 
-### Switch and case
+### Switch 和 case
+<!-- ### Switch and case -->
 
-Switch statements in Dart compare integer, string, or compile-time
+Dart中的Switch声明会使用`==`比较整数、字符串和编译时常量。被比较的对象必须是相同类的实例（不可以是子类型），而且这个类不可以覆盖（*override*）原有的`==`运算符。
+<!-- Switch statements in Dart compare integer, string, or compile-time
 constants using `==`. The compared objects must all be instances of the
 same class (and not of any of its subtypes), and the class must not
-override `==`.
-[Enumerated types](#enumerated-types) work well in `switch` statements.
+override `==`. -->
+[枚举类型Enumerated types](#enumerated-types)与`switch`语句是绝配。
+<!-- [Enumerated types](#enumerated-types) work well in `switch` statements. -->
 
 <div class="alert alert-info" markdown="1">
-**Note:**
+**注意：**
+Dart里的Switch语句是被设计用来处理有限的情况的，比如在解释器和扫描器。
+<!-- **Note:**
 Switch statements in Dart are intended for limited circumstances,
-such as in interpreters or scanners.
+such as in interpreters or scanners. -->
 </div>
 
-Each non-empty `case` clause ends with a `break` statement, as a rule.
+根据规定，每一个非空`case`条件执行都是要以`break`语句结尾的。
+其他用来结束一个非空`case`条件执行的方式有`continue`、`throw`或者`return`语句。
+<!-- Each non-empty `case` clause ends with a `break` statement, as a rule.
 Other valid ways to end a non-empty `case` clause are a `continue`,
-`throw`, or `return` statement.
+`throw`, or `return` statement. -->
 
-Use a `default` clause to execute code when no `case` clause matches:
+使用`default`来处理没有`case`匹配的条件的执行的情况：
+<!-- Use a `default` clause to execute code when no `case` clause matches: -->
 
 <?code-excerpt "misc/lib/language_tour/control_flow.dart (switch)"?>
 {% prettify dart %}
@@ -2156,8 +2183,9 @@ switch (command) {
 }
 {% endprettify %}
 
-The following example omits the `break` statement in a `case` clause,
-thus generating an error:
+下面的代码忽略了`case`条件执行中的`break`语句，因此产生了报错：
+<!-- The following example omits the `break` statement in a `case` clause,
+thus generating an error: -->
 
 <?code-excerpt "misc/lib/language_tour/control_flow.dart (switch-break-omitted)"?>
 {% prettify dart %}
@@ -2173,23 +2201,27 @@ switch (command) {
 }
 {% endprettify %}
 
-However, Dart does support empty `case` clauses, allowing a form of
-fall-through:
+话说回来，Dart还是支持了留空`case`条件执行的方式来运允许通过执行（fall-through）的形式：
+<!-- However, Dart does support empty `case` clauses, allowing a form of
+fall-through: -->
 
 <?code-excerpt "misc/lib/language_tour/control_flow.dart (switch-empty-case)"?>
 {% prettify dart %}
 var command = 'CLOSED';
 switch (command) {
-  case 'CLOSED': // Empty case falls through.
+  case 'CLOSED': // Empty case falls through.空case执行下面的case
   case 'NOW_CLOSED':
     // Runs for both CLOSED and NOW_CLOSED.
+    // 不论CLOSED还是NOW_CLOSED，都会执行。
     executeNowClosed();
     break;
 }
 {% endprettify %}
 
-If you really want fall-through, you can use a `continue` statement and
-a label:
+
+如果您想在非空的条件下进行通过执行(fall-through)，可以使用`continue`语句和一个符号（*label*）：
+<!-- If you really want fall-through, you can use a `continue` statement and
+a label: -->
 
 <?code-excerpt "misc/lib/language_tour/control_flow.dart (switch-continue)"?>
 {% prettify dart %}
@@ -2199,50 +2231,63 @@ switch (command) {
     executeClosed();
     continue nowClosed;
   // Continues executing at the nowClosed label.
-
+  // 在nowClosed符号处继续执行。
   nowClosed:
   case 'NOW_CLOSED':
     // Runs for both CLOSED and NOW_CLOSED.
+    // CLOSED和NOW_CLOSED条件下都会执行。
     executeNowClosed();
     break;
 }
 {% endprettify %}
 
+`case`的条件执行中可以有自己的本地变量，只有在大括号的作用域中可以获取。
 A `case` clause can have local variables, which are visible only inside
 the scope of that clause.
 
 
 ### Assert
 
-Use an `assert` statement to disrupt normal execution if a boolean
+使用`assert`语句来通过一个false的条件来扰乱程序的运行。您会常常在这篇文章中见到这个的例子。这里再给出一些：
+<!-- Use an `assert` statement to disrupt normal execution if a boolean
 condition is false. You can find examples of assert statements
-throughout this tour. Here are some more:
+throughout this tour. Here are some more: -->
 
 <?code-excerpt "misc/test/language_tour/control_flow_test.dart (assert)"?>
 {% prettify dart %}
 // Make sure the variable has a non-null value.
+// 确保变量值不为null。
 assert(text != null);
 
 // Make sure the value is less than 100.
+// 确保值小于100。
 assert(number < 100);
 
 // Make sure this is an https URL.
+// 确保字符串是https的URL。
 assert(urlString.startsWith('https'));
 {% endprettify %}
 
 <div class="alert alert-info" markdown="1">
-**Note:**
+**注意：**
+Addert语句不会在生产模式（production）的代码中生效；
+它们只为开发服务。
+Flutter框架在[debug模式debug mode][flutter debug mode]中开启了assert。
+开发用工具，比如[dartdevc][]默认支持asserts。
+想在其他的一些工具中使用，比如[dart][]和[dart2js,][dart2js]需要在命令行中加入`--enable-asserts`flag。
+<!-- **Note:**
 Assert statements have no effect in production code;
 they're for development only.
 Flutter enables asserts in [debug mode.][flutter debug mode]
 Development-only tools such as [dartdevc][]
 typically support asserts by default.
 Some tools, such as [dart][] and [dart2js,][dart2js]
-support asserts through a command-line flag: `--enable-asserts`.
+support asserts through a command-line flag: `--enable-asserts`. -->
 </div>
 
-To attach a message to an assert,
-add a string as the second argument.
+如果想给assert添加一个信息，在第二个参数中传入一个字符串。
+<!-- To attach a message to an assert,
+add a string as the second argument. -->
 
 <?code-excerpt "misc/test/language_tour/control_flow_test.dart (assert-with-message)"?>
 {% prettify dart %}
@@ -2250,11 +2295,13 @@ assert(urlString.startsWith('https'),
     'URL ($urlString) should start with "https".');
 {% endprettify %}
 
-The first argument to `assert` can be any expression that
+`assert`语句的第一个参数可以是任何解析为布尔值的表达式。如果表达式为true，assertion会跳过，
+程序会继续执行。如果是false，assertion会失败，一个异常([AssertionError][])会被抛出。
+<!-- The first argument to `assert` can be any expression that
 resolves to a boolean value. If the expression’s value
 is true, the assertion succeeds and execution
 continues. If it's false, the assertion fails and an exception (an
-[AssertionError][]) is thrown.
+[AssertionError][]) is thrown. -->
 
 
 ## Exceptions
@@ -2366,11 +2413,10 @@ use the `rethrow` keyword.
 
 <?code-excerpt "misc/test/language_tour/exceptions_test.dart (rethrow)" replace="/rethrow;/[!$&!]/g"?>
 {% prettify dart %}
-final foo = '';
-
 void misbehave() {
   try {
-    foo = "You can't change a final variable's value.";
+    dynamic foo = true;
+    print(foo++); // Runtime error
   } catch (e) {
     print('misbehave() partially handled ${e.runtimeType}.');
     [!rethrow;!] // Allow callers to see the exception.
@@ -2434,13 +2480,11 @@ for a class. Constructor names can be either <code><em>ClassName</em></code> or
 
 <?code-excerpt "misc/test/language_tour/classes_test.dart (object-creation)" replace="/ as .*?;/;/g"?>
 {% prettify dart %}
-var jsonData = jsonDecode('{"x":1, "y":2}');
-
 // Create a Point using Point().
 var p1 = new Point(2, 2);
 
 // Create a Point using Point.fromJson().
-var p2 = new Point.fromJson(jsonData);
+var p2 = new Point.fromJson({'x': 1, 'y': 2});
 {% endprettify %}
 
 <aside class="alert alert-info" markdown="1">
@@ -3439,7 +3483,8 @@ declare it as `List<String>` (read that as “list of string”). That way
 you, your fellow programmers, and your tools can detect that assigning a non-string to
 the list is probably a mistake. Here’s an example:
 
-<?code-excerpt "misc/test/language_tour/generics_test.dart (why-generics)"?>
+{:.fails-sa}
+<?code-excerpt "misc/lib/language_tour/generics/misc.dart (why-generics)"?>
 {% prettify dart %}
 var names = new List<String>();
 names.addAll(['Seth', 'Kathy', 'Lars']);
@@ -3559,19 +3604,17 @@ You can do this using `extends`.
 
 <?code-excerpt "misc/lib/language_tour/generics/base_class.dart" replace="/extends SomeBaseClass(?=. \{)/[!$&!]/g"?>
 {% prettify dart %}
-// T must be SomeBaseClass or one of its descendants.
 class Foo<T [!extends SomeBaseClass!]> {
-  // ···
+  // Implementation goes here...
+  String toString() => "Instance of 'Foo<$T>'";
 }
 
-class Extender extends SomeBaseClass {
-  // ···
-}
+class Extender extends SomeBaseClass {...}
 {% endprettify %}
 
 It's OK to use `SomeBaseClass` or any of its subclasses as generic argument:
 
-<?code-excerpt "misc/lib/language_tour/generics/base_class.dart (SomeBaseClass-ok)" replace="/Foo.\w+./[!$&!]/g"?>
+<?code-excerpt "misc/test/language_tour/generics_test.dart (SomeBaseClass-ok)" replace="/Foo.\w+./[!$&!]/g"?>
 {% prettify dart %}
 var someBaseClassFoo = new [!Foo<SomeBaseClass>!]();
 var extenderFoo = new [!Foo<Extender>!]();
@@ -3579,15 +3622,16 @@ var extenderFoo = new [!Foo<Extender>!]();
 
 It's also OK to specify no generic argument:
 
-<?code-excerpt "misc/lib/language_tour/generics/base_class.dart (no-generic-arg-ok)" replace="/Foo.\w+./[!$&!]/g"?>
+<?code-excerpt "misc/test/language_tour/generics_test.dart (no-generic-arg-ok)" replace="/expect\((.*?).toString\(\), .(.*?).\);/print($1); \/\/ $2/g"?>
 {% prettify dart %}
 var foo = new Foo();
+print(foo); // Instance of 'Foo<SomeBaseClass>'
 {% endprettify %}
 
 Specifying any non-`SomeBaseClass` type results in an error:
 
 {:.fails-sa}
-<?code-excerpt "misc/lib/language_tour/generics/base_class.dart (Foo-Object-error)" replace="/Foo.\w+./[!$&!]/g"?>
+<?code-excerpt "misc/lib/language_tour/generics/misc.dart (Foo-Object-error)" replace="/Foo.\w+./[!$&!]/g"?>
 {% prettify dart %}
 var foo = new [!Foo<Object>!]();
 {% endprettify %}
