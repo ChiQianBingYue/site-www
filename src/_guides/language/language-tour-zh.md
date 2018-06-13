@@ -2304,32 +2304,44 @@ continues. If it's false, the assertion fails and an exception (an
 [AssertionError][]) is thrown. -->
 
 
-## Exceptions
+## 异常
+<!-- ## Exceptions -->
 
-Your Dart code can throw and catch exceptions. Exceptions are errors
+您的Dart代码可以抛出（*throw*）和抓住（*catch*）异常。异常是那些表明我们不希望发生的事情发生了的错误。如果
+异常没有被catch，抛出错误的dart独立进程对象（[isolate](https://api.dartlang.org/stable/1.24.3/dart-isolate/Isolate-class.html)）会终止，
+通常情况下，dart独立进程对象和他的程序会终止。
+<!-- Your Dart code can throw and catch exceptions. Exceptions are errors
 indicating that something unexpected happened. If the exception isn’t
 caught, the isolate that raised the exception is suspended, and
-typically the isolate and its program are terminated.
+typically the isolate and its program are terminated. -->
 
-In contrast to Java, all of Dart’s exceptions are unchecked exceptions.
+和Java相比，所以的Dart异常是unchecked exceptions。方法不需要声明它们可能
+抛出的异常，而且您不一定要catch这些异常。
+<!-- In contrast to Java, all of Dart’s exceptions are unchecked exceptions.
 Methods do not declare which exceptions they might throw, and you are
-not required to catch any exceptions.
+not required to catch any exceptions. -->
 
-Dart provides [Exception][] and [Error][]
+Dart提供了[Exception][]和[Error][]类型，以及很多其他预定义好的子类型。当然，
+您也可以定义您自己的异常。不过，Dart程序也可以抛出任何非空（non-null）对象作为
+异常，而不仅仅是异常（*Exception*）和错误（*Error*）。
+<!-- Dart provides [Exception][] and [Error][]
 types, as well as numerous predefined subtypes. You can, of course,
 define your own exceptions. However, Dart programs can throw any
-non-null object—not just Exception and Error objects—as an exception.
+non-null object—not just Exception and Error objects—as an exception. -->
 
-### Throw
+### 抛出
+<!-- ### Throw -->
 
-Here’s an example of throwing, or *raising*, an exception:
+如下是一个抛出异常的例子，也可以称为提出（*raising*）一个异常：
+<!-- Here’s an example of throwing, or *raising*, an exception: -->
 
 <?code-excerpt "misc/lib/language_tour/exceptions.dart (throw-FormatException)"?>
 {% prettify dart %}
 throw new FormatException('Expected at least 1 section');
 {% endprettify %}
 
-You can also throw arbitrary objects:
+您也可以抛出任意的对象：
+<!-- You can also throw arbitrary objects: -->
 
 <?code-excerpt "misc/lib/language_tour/exceptions.dart (out-of-llamas)"?>
 {% prettify dart %}
@@ -2337,12 +2349,15 @@ throw 'Out of llamas!';
 {% endprettify %}
 
 <div class="alert alert-info" markdown="1">
-  **Note:** Production-quality code usually throws types that implement
-  [Error][] or [Exception][].
+  **注意：**生产级的代码通常会抛出实现（*implement*）[Error][] 或者 [Exception][]
+  接口的错误。
+  <!-- **Note:** Production-quality code usually throws types that implement
+  [Error][] or [Exception][]. -->
 </div>
 
-Because throwing an exception is an expression, you can throw exceptions
-in =\> statements, as well as anywhere else that allows expressions:
+因为抛出对象是一个表达式，所以您也可以在箭头函数（=\>），以及任何允许表达式的地方抛出异常：
+<!-- Because throwing an exception is an expression, you can throw exceptions
+in =\> statements, as well as anywhere else that allows expressions: -->
 
 <?code-excerpt "misc/lib/language_tour/exceptions.dart (throw-is-an-expression)"?>
 {% prettify dart %}
@@ -2350,12 +2365,14 @@ void distanceTo(Point other) =>
     throw new UnimplementedError();
 {% endprettify %}
 
+### 捕获
+<!-- ### Catch -->
 
-### Catch
-
-Catching, or capturing, an exception stops the exception from
+捕获一个异常会停止会停止这个异常的传播（*propagating*），只要您不再抛出一个异常。
+捕获异常可以使您有机会处理它：
+<!-- Catching, or capturing, an exception stops the exception from
 propagating (unless you rethrow the exception).
-Catching an exception gives you a chance to handle it:
+Catching an exception gives you a chance to handle it: -->
 
 <?code-excerpt "misc/lib/language_tour/exceptions.dart (try)"?>
 {% prettify dart %}
@@ -2366,10 +2383,12 @@ try {
 }
 {% endprettify %}
 
-To handle code that can throw more than one type of exception, you can
+要处理抛出多个异常的代码，您可以简单地使用多个捕获大括号。第一个匹配到异常对象的捕获大括号语句
+会处理异常。如果语句没有定义明确的类型，那个语句会处理任何异常对象：
+<!-- To handle code that can throw more than one type of exception, you can
 specify multiple catch clauses. The first catch clause that matches the
 thrown object’s type handles the exception. If the catch clause does not
-specify a type, that clause can handle any type of thrown object:
+specify a type, that clause can handle any type of thrown object: -->
 
 <?code-excerpt "misc/lib/language_tour/exceptions.dart (try-catch)"?>
 {% prettify dart %}
@@ -2377,23 +2396,30 @@ try {
   breedMoreLlamas();
 } on OutOfLlamasException {
   // A specific exception
+  // 一个特殊异常
   buyMoreLlamas();
 } on Exception catch (e) {
   // Anything else that is an exception
+  // 任何异常的东西
   print('Unknown exception: $e');
 } catch (e) {
   // No specified type, handles all
+  // 没有明确的类型，处理任何其他的情况
   print('Something really unknown: $e');
 }
 {% endprettify %}
 
-As the preceding code shows, you can use either `on` or `catch` or both.
+就像之前的代码所显示的那样，您可以使用`on`或者`catch`，也可以一起用。
+如果是指定的异常类型，使用`on`。如果您的异常处理需要异常对象，则使用`catch`。
+<!-- As the preceding code shows, you can use either `on` or `catch` or both.
 Use `on` when you need to specify the exception type. Use `catch` when
-your exception handler needs the exception object.
+your exception handler needs the exception object. -->
 
-You can specify one or two parameters to `catch()`.
+您可以给`catch()`定义一个或者两个参数。第一个是被抛出的异常，
+第二个是一个栈追踪（[StackTrace][]）对象。
+<!-- You can specify one or two parameters to `catch()`.
 The first is the exception that was thrown,
-and the second is the stack trace (a [StackTrace][] object).
+and the second is the stack trace (a [StackTrace][] object). -->
 
 <?code-excerpt "misc/lib/language_tour/exceptions.dart (try-catch-2)" replace="/\(e.*?\)/[!$&!]/g"?>
 {% prettify dart %}
@@ -2407,19 +2433,21 @@ try {
 }
 {% endprettify %}
 
-To partially handle an exception,
+如果想部分地处理异常，并想让它继续传播，使用`rethrow`关键词。
+<!-- To partially handle an exception,
 while allowing it to propagate,
-use the `rethrow` keyword.
+use the `rethrow` keyword. -->
 
 <?code-excerpt "misc/test/language_tour/exceptions_test.dart (rethrow)" replace="/rethrow;/[!$&!]/g"?>
 {% prettify dart %}
 void misbehave() {
   try {
     dynamic foo = true;
-    print(foo++); // Runtime error
+    print(foo++); // Runtime error 运行时错误
   } catch (e) {
-    print('misbehave() partially handled ${e.runtimeType}.');
+    print('misbehave() 部分的异常处理 ${e.runtimeType}.');
     [!rethrow;!] // Allow callers to see the exception.
+                 // 使调用函数看见异常
   }
 }
 
@@ -2427,7 +2455,7 @@ void main() {
   try {
     misbehave();
   } catch (e) {
-    print('main() finished handling ${e.runtimeType}.');
+    print('main() 最终的异常处理 ${e.runtimeType}.');
   }
 }
 {% endprettify %}
@@ -2435,9 +2463,11 @@ void main() {
 
 ### Finally
 
-To ensure that some code runs whether or not an exception is thrown, use
+如果想保证一些代码在任何情况下执行，不论是抛出了异常还是没有，使用`finally`大括号语句块。
+如果没有`catch`匹配到异常，那么异常会在`finally`大括号语句块执行后急需传播。
+<!-- To ensure that some code runs whether or not an exception is thrown, use
 a `finally` clause. If no `catch` clause matches the exception, the
-exception is propagated after the `finally` clause runs:
+exception is propagated after the `finally` clause runs: -->
 
 <?code-excerpt "misc/lib/language_tour/exceptions.dart (finally)"?>
 {% prettify dart %}
@@ -2445,11 +2475,13 @@ try {
   breedMoreLlamas();
 } finally {
   // Always clean up, even if an exception is thrown.
+  // 不论是否有异常，总是清理
   cleanLlamaStalls();
 }
 {% endprettify %}
 
-The `finally` clause runs after any matching `catch` clauses:
+`finally`里的代码会在所有`catch`代码后执行：
+<!-- The `finally` clause runs after any matching `catch` clauses: -->
 
 <?code-excerpt "misc/lib/language_tour/exceptions.dart (try-catch-finally)"?>
 {% prettify dart %}
@@ -2457,13 +2489,16 @@ try {
   breedMoreLlamas();
 } catch (e) {
   print('Error: $e'); // Handle the exception first.
+                      // 先处理异常
 } finally {
   cleanLlamaStalls(); // Then clean up.
+                      // 再清理
 }
 {% endprettify %}
 
-Learn more by reading the
-[Exceptions](/guides/libraries/library-tour#exceptions) section.
+更多内容，查看[Exceptions](/guides/libraries/library-tour#exceptions)章节。
+<!-- Learn more by reading the
+[Exceptions](/guides/libraries/library-tour#exceptions) section. -->
 
 ## Classes
 
