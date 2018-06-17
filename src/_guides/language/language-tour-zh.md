@@ -2759,10 +2759,12 @@ no-argument constructor in the superclass.
 that declares no constructors has only the default (no argument, no
 name) constructor. -->
 
-#### Named constructors
+#### 命名构造函数
+<!-- #### Named constructors -->
 
-Use a named constructor to implement multiple constructors for a class
-or to provide extra clarity:
+使用命名构造函数功能来为一个类实现多个构造方式，也可以来增强程序的可读性。
+<!-- Use a named constructor to implement multiple constructors for a class
+or to provide extra clarity: -->
 
 <?code-excerpt "misc/lib/language_tour/classes/point.dart (named-constructor)" replace="/Point\.\S*/[!$&!]/g"?>
 {% prettify dart %}
@@ -2771,7 +2773,7 @@ class Point {
 
   Point(this.x, this.y);
 
-  // Named constructor
+  // 命名构造函数
   [!Point.origin()!] {
     x = 0;
     y = 0;
@@ -2779,32 +2781,49 @@ class Point {
 }
 {% endprettify %}
 
-Remember that constructors are not inherited, which means that a
+记住构造函数是不会继承的，这意味着一个父类的命名构造函数是不会被子类继承的。如果您
+希望用一个子类的父类所定义的命名构造函数创建一个实例，那么您必须在这个子类中实现这
+个构造函数。
+<!-- Remember that constructors are not inherited, which means that a
 superclass’s named constructor is not inherited by a subclass. If you
 want a subclass to be created with a named constructor defined in the
-superclass, you must implement that constructor in the subclass.
+superclass, you must implement that constructor in the subclass. -->
 
-#### Invoking a non-default superclass constructor
+#### 触发一个非默认父类的构造函数
+<!-- #### Invoking a non-default superclass constructor -->
 
+在默认的情况下，一个子类的构造函数会调用父类的非命名，无参数的构造函数。
+这个父类的构造函数会在子类的的构造函数的函数逻辑之前被调用。如果一个
+[初始化列表- initializer list](#initializer-list)也被使用了，那么这个
+初始化列表会在父类的构造函数之前被调用。
+总结一下，执行的顺序如下：
+<!-- 
 By default, a constructor in a subclass calls the superclass’s unnamed,
 no-argument constructor.
 The superclass's constructor is called at the beginning of the
 constructor body. If an [initializer list](#initializer-list)
 is also being used, it executes before the superclass is called.
-In summary, the order of execution is as follows:
+In summary, the order of execution is as follows: -->
 
-1. initializer list
+1. 初始化列表
+1. 父类的无参构造函数
+1. 当前类的无参构造函数
+<!-- 1. initializer list
 1. superclass's no-arg constructor
-1. main class's no-arg constructor
+1. main class's no-arg constructor -->
 
-If the superclass doesn’t have an unnamed, no-argument constructor,
+如果一个父类没有一个未命名的，没有参数的构造函数，那么您必须手动地去调用这个父类中
+的某一个构造函数。方法是在构造逻辑之前，在一个冒号（`:`）之后，定义需要的父类构造函数。
+<!-- If the superclass doesn’t have an unnamed, no-argument constructor,
 then you must manually call one of the constructors in the
 superclass. Specify the superclass constructor after a colon (`:`), just
-before the constructor body (if any).
+before the constructor body (if any). -->
 
-In the following example, the constructor for the Employee class
+如下的代码就是这样的一个例子，Employee类的构造函数调用了它父类，Person，的命名构造函数。
+点击运行按钮 ( {% img 'red-run.png' %} ) 来执行代码。
+<!-- In the following example, the constructor for the Employee class
 calls the named constructor for its superclass, Person.
-Click the run button ( {% img 'red-run.png' %} ) to execute the code.
+Click the run button ( {% img 'red-run.png' %} ) to execute the code. -->
 
 {% comment %}
 https://gist.github.com/Sfshaza/e57aa06401e6618d4eb8
@@ -2850,9 +2869,10 @@ src="{{site.custom.dartpad.embed-dart-prefix}}?id=e57aa06401e6618d4eb8&horizonta
     style="border: 1px solid #ccc;">
 </iframe>
 
-Because the arguments to the superclass constructor are evaluated before
+因为传入父类构造函数的参数会在调用之前先求值，所以参数可以是一个表达式，比如函数调用：
+<!-- Because the arguments to the superclass constructor are evaluated before
 invoking the constructor, an argument can be an expression such as a
-function call:
+function call: -->
 
 <?code-excerpt "misc/lib/language_tour/classes/employee.dart (method-then-constructor)"?>
 {% prettify dart %}
@@ -2863,21 +2883,26 @@ class Employee extends Person {
 {% endprettify %}
 
 <div class="alert alert-warning" markdown="1">
-**Warning:**
+**警告：**
+传入父类构造函数的参数是没有获取`this`的能力的。举个例子，参数可以调用静态方法，但不能
+调用实例方法。
+<!-- **Warning:**
 Arguments to the superclass constructor do not have access to `this`.
-For example, arguments can call static methods but not instance methods.
+For example, arguments can call static methods but not instance methods. -->
 </div>
 
-#### Initializer list
+#### 初始化列表 - Initializer list
+<!-- #### Initializer list -->
 
-Besides invoking a superclass constructor, you can also initialize
+除了调用一个父类的构造函数，你还可以在构造逻辑之前初始化实例变量。要有逗号来分割
+这样的初始化操作。
+<!-- Besides invoking a superclass constructor, you can also initialize
 instance variables before the constructor body runs. Separate
-initializers with commas.
+initializers with commas. -->
 
 <?code-excerpt "misc/lib/language_tour/classes/point_alt.dart (initializer-list)"?>
 {% prettify dart %}
-// Initializer list sets instance variables before
-// the constructor body runs.
+// 使用初始化列表，在构造逻辑之前初始化实例变量
 Point.fromJson(Map<String, num> json)
     : x = json['x'],
       y = json['y'] {
@@ -2886,12 +2911,15 @@ Point.fromJson(Map<String, num> json)
 {% endprettify %}
 
 <div class="alert alert-warning" markdown="1">
-**Warning:**
-The right-hand side of an initializer does not have access to `this`.
+**警告：**
+初始化操作的右边是没有获取`this`的能力的。
+<!-- **Warning:**
+The right-hand side of an initializer does not have access to `this`. -->
 </div>
 
-During development, you can validate inputs by using `assert` in the
-initializer list.
+在开发时，您可以在初始化列表中使用`assert`来验证输入。
+<!-- During development, you can validate inputs by using `assert` in the
+initializer list. -->
 
 <?code-excerpt "misc/lib/language_tour/classes/point_alt.dart (initializer-list-with-assert)" replace="/assert\(.*?\)/[!$&!]/g"?>
 {% prettify dart %}
@@ -2908,9 +2936,12 @@ https://github.com/dart-lang/sdk/issues/30968
 https://github.com/dart-lang/sdk/blob/master/docs/language/informal/assert-in-initializer-list.md]
 {% endcomment %}
 
-Initializer lists are handy when setting up final fields.
+初始化列表是很合适的用来设置final变量的地方。
+如下的例子在一个初始化列表中初始化了3个final变量。
+点击运行按钮 ( {% img 'red-run.png' %} ) 来执行代码
+<!-- Initializer lists are handy when setting up final fields.
 The following example initializes three final fields in an initializer list.
-Click the run button ( {% img 'red-run.png' %} ) to execute the code.
+Click the run button ( {% img 'red-run.png' %} ) to execute the code. -->
 
 {% comment %}
 https://gist.github.com/Sfshaza/7a9764702c0608711e08
@@ -2946,30 +2977,36 @@ src="{{site.custom.dartpad.embed-dart-prefix}}?id=7a9764702c0608711e08&horizonta
 </iframe>
 
 
-#### Redirecting constructors
+#### 重定向构造函数
+<!-- #### Redirecting constructors -->
 
-Sometimes a constructor’s only purpose is to redirect to another
+有时候一个构造函数的唯一目的是重定向到同个类中的其他构造函数。这种构造函数的逻辑可以是
+空的，只需要在冒号（:）后面调用希望的构造函数。
+<!-- Sometimes a constructor’s only purpose is to redirect to another
 constructor in the same class. A redirecting constructor’s body is
-empty, with the constructor call appearing after a colon (:).
+empty, with the constructor call appearing after a colon (:). -->
 
 <?code-excerpt "misc/lib/language_tour/classes/point_redirecting.dart"?>
 {% prettify dart %}
 class Point {
   num x, y;
 
-  // The main constructor for this class.
+  // 当前类的主构造函数。
   Point(this.x, this.y);
 
-  // Delegates to the main constructor.
+  // 对主构造函数的代理。
   Point.alongXAxis(num x) : this(x, 0);
 }
 {% endprettify %}
 
-#### Constant constructors
+#### 常量构造函数
+<!-- #### Constant constructors -->
 
-If your class produces objects that never change, you can make these
+如果你的类产出的对象用于不会变，你可以使这些对象成为编译时常量。要做到这个，定义一个`const`构造函数，
+并且确保所有的实例变量都是`final`。
+<!-- If your class produces objects that never change, you can make these
 objects compile-time constants. To do this, define a `const` constructor
-and make sure that all instance variables are `final`.
+and make sure that all instance variables are `final`. -->
 
 <?code-excerpt "misc/lib/language_tour/classes/immutable_point.dart"?>
 {% prettify dart %}
@@ -2983,15 +3020,19 @@ class ImmutablePoint {
 }
 {% endprettify %}
 
-#### Factory constructors
+#### 工厂构造函数
+<!-- #### Factory constructors -->
 
-Use the `factory` keyword when implementing a constructor that doesn’t
+使用`factory`关键词来实现一个不总是创建它的新实例的构造函数。比如说，一个工厂构造函数
+也许会从缓存中取出一个实例，也可能返回一个子类型的实例。
+<!-- Use the `factory` keyword when implementing a constructor that doesn’t
 always create a new instance of its class. For example, a factory
 constructor might return an instance from a cache, or it might return an
-instance of a subtype.
+instance of a subtype. -->
 
-The following example demonstrates a factory constructor returning
-objects from a cache:
+如下的例子说明了一个从缓存中返回对象的工厂构造函数：
+<!-- The following example demonstrates a factory constructor returning
+objects from a cache: -->
 
 <?code-excerpt "misc/lib/language_tour/classes/logger.dart"?>
 {% prettify dart %}
@@ -2999,8 +3040,7 @@ class Logger {
   final String name;
   bool mute = false;
 
-  // _cache is library-private, thanks to
-  // the _ in front of its name.
+  // _cache 是类库中的私有属性，因为它名字前的 _。
   static final Map<String, Logger> _cache =
       <String, Logger>{};
 
@@ -3023,11 +3063,14 @@ class Logger {
 {% endprettify %}
 
 <div class="alert alert-info" markdown="1">
-**Note:**
-Factory constructors have no access to `this`.
+##注意：##
+工厂构造函数是不能获取`this`的。
+<!-- **Note:**
+Factory constructors have no access to `this`. -->
 </div>
 
-To invoke a factory constructor, you use the `new` keyword:
+要调用一个工厂构造函数，您需要使用`new`关键词：
+<!-- To invoke a factory constructor, you use the `new` keyword: -->
 
 <?code-excerpt "misc/lib/language_tour/classes/logger.dart (logger)"?>
 {% prettify dart %}
@@ -3036,15 +3079,20 @@ logger.log('Button clicked');
 {% endprettify %}
 
 
-### Methods
+### 方法
+<!-- ### Methods -->
 
-Methods are functions that provide behavior for an object.
+方法就是为一个对象提供行为的函数。
+<!-- Methods are functions that provide behavior for an object. -->
 
-#### Instance methods
+#### 实例方法
+<!-- #### Instance methods -->
 
-Instance methods on objects can access instance variables and `this`.
+对象的实例方法可以获取实例的变量和实例的`this`。如下例子中的`distanceTo()`方法就是
+这样的一个实例方法。
+<!-- Instance methods on objects can access instance variables and `this`.
 The `distanceTo()` method in the following sample is an example of an
-instance method:
+instance method: -->
 
 <?code-excerpt "misc/lib/language_tour/classes/point.dart (class-with-distanceTo)"?>
 {% prettify dart %}
@@ -3063,13 +3111,17 @@ class Point {
 }
 {% endprettify %}
 
-#### Getters and setters
+#### Getters 和 setters
+<!-- #### Getters and setters -->
 
-Getters and setters are special methods that provide read and write
+Getters和setters是为对象的属性提供读、写功能的特殊方法。回忆一下每个实例变量都有一个
+隐性的getter，如果合适的话，还会有一个setter。您可以使用getters和setters来实现额外
+的属性，通过使用`get`和`set`关键词：
+<!-- Getters and setters are special methods that provide read and write
 access to an object’s properties. Recall that each instance variable has
 an implicit getter, plus a setter if appropriate. You can create
 additional properties by implementing getters and setters, using the
-`get` and `set` keywords:
+`get` and `set` keywords: -->
 
 <?code-excerpt "misc/lib/language_tour/classes/rectangle.dart"?>
 {% prettify dart %}
@@ -3078,7 +3130,7 @@ class Rectangle {
 
   Rectangle(this.left, this.top, this.width, this.height);
 
-  // Define two calculated properties: right and bottom.
+  // 定义两个计算得来的属性，right和bottom
   num get right => left + width;
   set right(num value) => left = value - width;
   num get bottom => top + height;
@@ -3093,48 +3145,60 @@ void main() {
 }
 {% endprettify %}
 
-With getters and setters, you can start with instance variables, later
-wrapping them with methods, all without changing client code.
+通过使用getters和setters，您可以以实例变量为起点，之后把他们装进方法里，而完全不需要
+改变类外部的代码。
+<!-- With getters and setters, you can start with instance variables, later
+wrapping them with methods, all without changing client code. -->
 
 <div class="alert alert-info" markdown="1">
-**Note:**
+**注意：**
+运算符，比如增加（++），是以一种意料之中的方式运作的，是不管getter是否显示地定义过的。
+要避免意料之外的效果，这种运算符只会明确地调用getter一次，把塔的值存在一个零时变量中。
+<!-- **Note:**
 Operators such as increment (++) work in the expected way, whether or
 not a getter is explicitly defined. To avoid any unexpected side
 effects, the operator calls the getter exactly once, saving its value
-in a temporary variable.
+in a temporary variable. -->
 </div>
 
-#### Abstract methods
+#### 抽象方法 - Abstract
+<!-- #### Abstract methods -->
 
-Instance, getter, and setter methods can be abstract, defining an
+实例，getter，和setter方法可以是抽象（*abstract*）的。抽象的意思是定义一个接口，但把
+具体实现的任务交给其他类。抽象方法只会在[抽象类 abstract classes](#abstract-classes)中出现。
+<!-- Instance, getter, and setter methods can be abstract, defining an
 interface but leaving its implementation up to other classes.
-Abstract methods can only exist in [abstract classes](#abstract-classes).
+Abstract methods can only exist in [abstract classes](#abstract-classes). -->
 
-To make a method abstract, use a semicolon (;) instead of a method body:
+想让一个方法变成抽象方法，使用一个分号（；），不要写方法逻辑：
+<!-- To make a method abstract, use a semicolon (;) instead of a method body: -->
 
 <?code-excerpt "misc/lib/language_tour/classes/doer.dart"?>
 {% prettify dart %}
 abstract class Doer {
   // Define instance variables and methods...
 
-  void doSomething(); // Define an abstract method.
+  void doSomething(); // 定义一个抽象方法。
 }
 
 class EffectiveDoer extends Doer {
   void doSomething() {
-    // Provide an implementation, so the method is not abstract here...
+    // 提供一个实现，所有这里的方法并不是抽象的
   }
 }
 {% endprettify %}
 
-Calling an abstract method results in a runtime error.
+调用一个抽象方法会产生运行时错误。
+<!-- Calling an abstract method results in a runtime error. -->
 
+#### 可覆盖运算符 - Overridable operators
+<!-- #### Overridable operators -->
 
-#### Overridable operators
-
-You can override the operators shown in the following table.
+您可以覆盖在下面表格中的运算符。比如说，如果您定义了一个向量（*Vector*）类，你
+可以把`+`方法定义成两个向量的相加。
+<!-- You can override the operators shown in the following table.
 For example, if you define a
-Vector class, you might define a `+` method to add two vectors.
+Vector class, you might define a `+` method to add two vectors. -->
 
 `<`  | `+`  | `|`  | `[]`
 `>`  | `/`  | `^`  | `[]=`
@@ -3143,7 +3207,8 @@ Vector class, you might define a `+` method to add two vectors.
 `–`  | `%`  | `>>`
 {:.table}
 
-Here’s an example of a class that overrides the `+` and `-` operators:
+如下是个覆盖`+`和`-`运算符的例子：
+<!-- Here’s an example of a class that overrides the `+` and `-` operators: -->
 
 <?code-excerpt "misc/lib/language_tour/classes/vector.dart"?>
 {% prettify dart %}
@@ -3152,12 +3217,12 @@ class Vector {
 
   const Vector(this.x, this.y);
 
-  /// Overrides + (a + b).
+  /// 覆盖 + (a + b).
   Vector operator +(Vector v) {
     return new Vector(x + v.x, y + v.y);
   }
 
-  /// Overrides - (a - b).
+  /// 覆盖 - (a - b).
   Vector operator -(Vector v) {
     return new Vector(x - v.x, y - v.y);
   }
@@ -3178,14 +3243,16 @@ void main() {
 }
 {% endprettify %}
 
-If you override `==`, you should also override Object's `hashCode` getter.
+如果您覆盖了`==`，您必须同时覆盖对象的`hashCode`getter。在[Implementing map keys](/guides/libraries/library-tour#implementing-map-keys)查看这样的一个例子。
+<!-- If you override `==`, you should also override Object's `hashCode` getter.
 For an example of overriding `==` and `hashCode`, see
-[Implementing map keys](/guides/libraries/library-tour#implementing-map-keys).
+[Implementing map keys](/guides/libraries/library-tour#implementing-map-keys). -->
 
-For more information on overriding, in general, see
-[Extending a class](#extending-a-class).
+更多的关于覆盖的信息，查看[Extending a class](#extending-a-class)。
+<!-- For more information on overriding, in general, see
+[Extending a class](#extending-a-class). -->
 
-
+<!-- TODO: -->
 ### Abstract classes
 
 Use the `abstract` modifier to define an *abstract class*—a class that
