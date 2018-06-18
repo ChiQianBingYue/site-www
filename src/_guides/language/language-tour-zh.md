@@ -3082,7 +3082,7 @@ logger.log('Button clicked');
 ### 方法
 <!-- ### Methods -->
 
-方法就是为一个对象提供行为的函数。
+方法就是为一个对象描述行为的函数。
 <!-- Methods are functions that provide behavior for an object. -->
 
 #### 实例方法
@@ -3252,57 +3252,67 @@ For an example of overriding `==` and `hashCode`, see
 <!-- For more information on overriding, in general, see
 [Extending a class](#extending-a-class). -->
 
-<!-- TODO: -->
-### Abstract classes
+### 抽象类 Abstract classes
+<!-- ### Abstract classes -->
 
-Use the `abstract` modifier to define an *abstract class*—a class that
+使用`abstact`修饰符来定义一个*抽象类-abstact class*，抽象类是一种不能被实例化的类，
+它也是一种非常好的定义接口的方法，同时也可以实现一部分的功能。如果您希望您的抽象类可以
+实例化，那么就定义一个[工厂构造函数](#factory-constructors)。
+<!-- Use the `abstract` modifier to define an *abstract class*—a class that
 can’t be instantiated. Abstract classes are useful for defining
 interfaces, often with some implementation. If you want your abstract
 class to appear to be instantiable, define a [factory
-constructor](#factory-constructors).
+constructor](#factory-constructors). -->
 
-Abstract classes often have [abstract methods](#abstract-methods).
+抽象类通常都有[抽象方法-abstract methods](#abstract-methods)。如下是一个定义了
+抽象方法的抽象类的例子：
+<!-- Abstract classes often have [abstract methods](#abstract-methods).
 Here’s an example of declaring an abstract class that has an abstract
-method:
+method: -->
 
 <?code-excerpt "misc/lib/language_tour/classes/misc.dart (abstract)"?>
 {% prettify dart %}
-// This class is declared abstract and thus
-// can't be instantiated.
+// 这个类被声明为抽象类，因此不能被实例化
 abstract class AbstractContainer {
-  // Define constructors, fields, methods...
+  // 定义构造函数，字段，方法
 
-  void updateChildren(); // Abstract method.
+  void updateChildren(); // 抽象方法
 }
 {% endprettify %}
 
 
-### Implicit interfaces
+### 隐式接口
+<!-- ### Implicit interfaces -->
 
-Every class implicitly defines an interface containing all the instance
+每个类都隐式地定义了一个接口，此接口包含这个类的所有实例成员和其所实现的所有接口。如果你
+希望创建一个类，A。你还希望A提供另一个类B的API，但不去具体基础B类的实现，那么A类必须实
+现B的接口。
+<!-- Every class implicitly defines an interface containing all the instance
 members of the class and of any interfaces it implements. If you want to
 create a class A that supports class B’s API without inheriting B’s
-implementation, class A should implement the B interface.
+implementation, class A should implement the B interface. -->
 
-A class implements one or more interfaces by declaring them in an
+一个类可以实现一个或者多个接口，方法是在`implements`代码段中声明需要实现的接口并且提供
+接口所需要的API。如下所示：
+<!-- A class implements one or more interfaces by declaring them in an
 `implements` clause and then providing the APIs required by the
-interfaces. For example:
+interfaces. For example: -->
 
 <?code-excerpt "misc/lib/language_tour/classes/impostor.dart"?>
 {% prettify dart %}
-// A person. The implicit interface contains greet().
+// 一个Person类。它的隐式接口包含了greet()方法。
 class Person {
-  // In the interface, but visible only in this library.
+  // 也在接口中，但只在当前函数库汇可见。
   final _name;
 
-  // Not in the interface, since this is a constructor.
+  // 不在接口中，因为是个构造函数。
   Person(this._name);
 
-  // In the interface.
+  // 在接口中。
   String greet(String who) => 'Hello, $who. I am $_name.';
 }
 
-// An implementation of the Person interface.
+// 一个对于Person接口的现实。
 class Impostor implements Person {
   get _name => '';
 
@@ -3317,8 +3327,9 @@ void main() {
 }
 {% endprettify %}
 
-Here’s an example of specifying that a class implements multiple
-interfaces:
+如下是一个实现了多个接口的类的例子：
+<!-- Here’s an example of specifying that a class implements multiple
+interfaces: -->
 
 <?code-excerpt "misc/lib/language_tour/classes/misc.dart (point_interfaces)"?>
 {% prettify dart %}
@@ -3328,10 +3339,12 @@ class Point implements Comparable, Location {
 {% endprettify %}
 
 
-### Extending a class
+### 扩展一个类
+<!-- ### Extending a class -->
 
-Use `extends` to create a subclass, and `super` to refer to the
-superclass:
+使用`extends`来创建一个子类，并且用`super`来指代父类：
+<!-- Use `extends` to create a subclass, and `super` to refer to the
+superclass: -->
 
 <?code-excerpt "misc/lib/language_tour/classes/extends.dart" replace="/extends|super/[!$&!]/g"?>
 {% prettify dart %}
@@ -3354,12 +3367,14 @@ class SmartTelevision [!extends!] Television {
 }
 {% endprettify %}
 
+#### 覆盖类成员
+<!-- #### Overriding members -->
 
-#### Overriding members
-
-Subclasses can override instance methods, getters, and setters.
+子类可以覆盖父类的实例方法，getters和setters。您可以使用`@override` 
+描述（*annotation*）来告诉Dart您希望覆盖一个成员：
+<!-- Subclasses can override instance methods, getters, and setters.
 You can use the `@override` annotation to indicate that you are
-intentionally overriding a member:
+intentionally overriding a member: -->
 
 <?code-excerpt "misc/lib/language_tour/metadata/television.dart (override)" replace="/@override/[!$&!]/g"?>
 {% prettify dart %}
@@ -3372,21 +3387,24 @@ class SmartTelevision extends Television {
 }
 {% endprettify %}
 
-To narrow the type of a method parameter or instance variable in code that is
+要缩小代码中[类型安全-type safe](/guides/language/sound-dart)的方法或者实例变量的参数类型，
+您可以使用[`covariant` 关键词](/guides/language/sound-problems#the-covariant-keyword).
+<!-- To narrow the type of a method parameter or instance variable in code that is
 [type safe](/guides/language/sound-dart),
-you can use the [`covariant` keyword](/guides/language/sound-problems#the-covariant-keyword).
+you can use the [`covariant` keyword](/guides/language/sound-problems#the-covariant-keyword). -->
 
 
 #### noSuchMethod()
 
-To detect or react whenever code attempts to use a non-existent method or
-instance variable, you can override `noSuchMethod()`:
+如果想检测并且应对代码尝试使用不存在的方法或者实例变量的情况，您可以覆盖`noSuchMethod()`方法:
+<!-- To detect or react whenever code attempts to use a non-existent method or
+instance variable, you can override `noSuchMethod()`: -->
 
 <?code-excerpt "misc/lib/language_tour/classes/no_such_method.dart" replace="/noSuchMethod(?!,)/[!$&!]/g"?>
 {% prettify dart %}
 class A {
-  // Unless you override noSuchMethod, using a
-  // non-existent member results in a NoSuchMethodError.
+  // 除非您覆盖了noSuchMethod，使用一个不存在的成员会导致一个
+  // NoSuchMethodError错误
   @override
   void [!noSuchMethod!](Invocation invocation) {
     print('You tried to use a non-existent member: ' +
@@ -3395,41 +3413,54 @@ class A {
 }
 {% endprettify %}
 
-You **can't invoke** an unimplemented method unless
-**one** of the following is true:
+您**不能触发**一个未被实现的方法，除非下列的**一种**情况为真:
+<!-- You **can't invoke** an unimplemented method unless
+**one** of the following is true: -->
 
-* The receiver has the static type `dynamic`.
+* 接收者有一个静态的`dynamic`类型。
+<!-- * The receiver has the static type `dynamic`. -->
 
-* The receiver has a static type that
+* 接收者有一个静态类型，并且定义了这个未被实现的方法（abstact也行），
+同时，这个dynamic类型的接受者有一个`noSuchMethod()`的实现，而且
+这个实现和`Object`类中的不同。
+<!-- * The receiver has a static type that
 defines the unimplemented method (abstract is OK),
 and the dynamic type of the receiver has an implemention of `noSuchMethod()`
-that's different from the one in class `Object`.
+that's different from the one in class `Object`. -->
 
-For more information, see the informal
-[nosuchMethod forwarding specification.](https://github.com/dart-lang/sdk/blob/master/docs/language/informal/nosuchmethod-forwarding.md)
+更多的信息，查看[nosuchMethod forwarding specification。](https://github.com/dart-lang/sdk/blob/master/docs/language/informal/nosuchmethod-forwarding.md)
+<!-- For more information, see the informal
+[nosuchMethod forwarding specification.](https://github.com/dart-lang/sdk/blob/master/docs/language/informal/nosuchmethod-forwarding.md) -->
 
 
 <a id="enums"></a>
-### Enumerated types
+### 枚举类型 Enumerated types
+<!-- ### Enumerated types -->
 
-Enumerated types, often called _enumerations_ or _enums_,
+枚举类型，经常被称为 _enumerations_ 或者 _enums_，是一种用来
+表示固定数量的常量的特殊类。
+<!-- Enumerated types, often called _enumerations_ or _enums_,
 are a special kind of class used to represent
-a fixed number of constant values.
+a fixed number of constant values. -->
 
 
-#### Using enums
+#### 使用 enums
+<!-- #### Using enums -->
 
-Declare an enumerated type using the `enum` keyword:
+使用`enum`关键词来声明枚举类型：
+<!-- Declare an enumerated type using the `enum` keyword: -->
 
 <?code-excerpt "misc/lib/language_tour/classes/enum.dart (enum)"?>
 {% prettify dart %}
 enum Color { red, green, blue }
 {% endprettify %}
 
-Each value in an enum has an `index` getter,
+一个enum中的每个值都有一个`index`getter，这个getter回返回一个在enum声明中的
+以0开始的位置值。举例来说，第一个值有index 0，第二个值有index 1.
+<!-- Each value in an enum has an `index` getter,
 which returns the zero-based position of the value in the enum declaration.
 For example, the first value has index 0,
-and the second value has index 1.
+and the second value has index 1. -->
 
 <?code-excerpt "misc/lib/language_tour/classes/enum.dart (index)"?>
 {% prettify dart %}
@@ -3438,8 +3469,9 @@ assert(Color.green.index == 1);
 assert(Color.blue.index == 2);
 {% endprettify %}
 
-To get a list of all of the values in the enum,
-use the enum's `values` constant.
+如果想获取enum中所有值的列表，使用enum的`values`常量。
+<!-- To get a list of all of the values in the enum,
+use the enum's `values` constant. -->
 
 <?code-excerpt "misc/lib/language_tour/classes/enum.dart (values)"?>
 {% prettify dart %}
@@ -3447,8 +3479,10 @@ List<Color> colors = Color.values;
 assert(colors[2] == Color.blue);
 {% endprettify %}
 
-You can use enums in [switch statements](#switch-and-case), and
-you'll get a warning if you don't handle all of the enum's values:
+您可以在[switch statements](#switch-and-case)使用enums，而且如果您没有
+处理enum所有值的情况，程序回产生一个警告：
+<!-- You can use enums in [switch statements](#switch-and-case), and
+you'll get a warning if you don't handle all of the enum's values: -->
 
 <?code-excerpt "misc/lib/language_tour/classes/enum.dart (switch)"?>
 {% prettify dart %}
@@ -3461,27 +3495,35 @@ switch (aColor) {
   case Color.green:
     print('Green as grass!');
     break;
-  default: // Without this, you see a WARNING.
+  default: // 如果没有defaul，您会看见一个WARNING。
     print(aColor); // 'Color.blue'
 }
 {% endprettify %}
 
-Enumerated types have the following limits:
+枚举类型有如下限制：
+<!-- Enumerated types have the following limits: -->
 
-* You can't subclass, mix in, or implement an enum.
-* You can't explicitly instantiate an enum.
+* 您不可以在enum中使用子类（subclass），混入（mix in,）或者实现（implement）一个接口。
+<!-- * You can't subclass, mix in, or implement an enum. -->
+* 您不可以显式地初始化一个enum。
+<!-- * You can't explicitly instantiate an enum. -->
 
-For more information, see the
-[Dart Language Specification](/guides/language/spec).
+更多的信息，查看[Dart Language Specification](/guides/language/spec)。
+<!-- For more information, see the
+[Dart Language Specification](/guides/language/spec). -->
 
 
-### Adding features to a class: mixins
+### 为类增加功能：混入 - mixins
+<!-- ### Adding features to a class: mixins -->
 
-Mixins are a way of reusing a class's code in multiple class
-hierarchies.
+混入（Mixins）是一种在多个类结构中复用一个类的代码的方法。
+<!-- Mixins are a way of reusing a class's code in multiple class
+hierarchies. -->
 
-To use a mixin, use the `with` keyword followed by one or more mixin
-names. The following example shows two classes that use mixins:
+要使用mixin，需要使用`with`关键词，并在关键词后跟上一个或多个mixin的名称。如下
+的代码展示了两个使用minxins的类的例子：
+<!-- To use a mixin, use the `with` keyword followed by one or more mixin
+names. The following example shows two classes that use mixins: -->
 
 <?code-excerpt "misc/lib/language_tour/classes/orchestra.dart (Musician and Maestro)" replace="/(with.*) \{/[!$1!] {/g"?>
 {% prettify dart %}
@@ -3498,8 +3540,10 @@ class Maestro extends Person
 }
 {% endprettify %}
 
-To implement a mixin, create a class that extends Object,
-declares no constructors, and has no calls to `super`. For example:
+要实现一个mixin，创建一个继承了Ojbect类的类，不要声明构造函数，并且不要调用`super`。
+举个例子：
+<!-- To implement a mixin, create a class that extends Object,
+declares no constructors, and has no calls to `super`. For example: -->
 
 <?code-excerpt "misc/lib/language_tour/classes/orchestra.dart (Musical)"?>
 {% prettify dart %}
@@ -3521,7 +3565,15 @@ abstract class Musical {
 {% endprettify %}
 
 <div class="alert alert-info" markdown="1">
-**Note:**
+**Note：**
+从Dart 1.13开始，有两个关于mixins的限制被移除了：
+
+* Mixins可以运行从一个不是Object的类拓展。
+* Mixins可以调用`super()`。
+
+这种“超级mixins”没有被[dart2js 支持](https://github.com/dart-lang/sdk/issues/23773)，
+并且需要在dartanalyzer使用`--supermixin` flag。
+<!-- **Note:**
 As of 1.13, two restrictions on mixins have been lifted
 from the Dart VM:
 
@@ -3530,21 +3582,25 @@ from the Dart VM:
 
 These "super mixins" are
 [not yet supported in dart2js](https://github.com/dart-lang/sdk/issues/23773)
-and require the `--supermixin` flag in dartanalyzer.
+and require the `--supermixin` flag in dartanalyzer. -->
 </div>
 
-For more information, see the article [Mixins in
-Dart.](/articles/language/mixins)
+更多的信息，查看这个文章：[Mixins in
+Dart。](/articles/language/mixins)
 
 
-### Class variables and methods
+### 类变量和类方法
+<!-- ### Class variables and methods -->
 
-Use the `static` keyword to implement class-wide variables and methods.
+使用`static`关键词来实现类范围内的变量和方法。
+<!-- Use the `static` keyword to implement class-wide variables and methods. -->
 
-#### Static variables
+#### 静态变量
+<!-- #### Static variables -->
 
-Static variables (class variables) are useful for class-wide state and
-constants:
+静态变量（类变量）在定义类范围内的状态和常量是十分有用的：
+<!-- Static variables (class variables) are useful for class-wide state and
+constants: -->
 
 <?code-excerpt "misc/lib/language_tour/classes/misc.dart (static-field)"?>
 {% prettify dart %}
@@ -3558,19 +3614,26 @@ void main() {
 }
 {% endprettify %}
 
-Static variables aren’t initialized until they’re used.
+静态变量在他们被使用之前是不会被初始化的。
+<!-- Static variables aren’t initialized until they’re used. -->
 
 <div class="alert alert-info" markdown="1">
-**Note:**
+**注意：**
+这个页面的内容遵从了[style guide
+recommendation](/guides/language/effective-dart/style#identifiers)，它推荐使用
+`小写驼峰法 - lowerCamelCase`来给常量命名。
+<!-- **Note:**
 This page follows the [style guide
 recommendation](/guides/language/effective-dart/style#identifiers)
-of preferring `lowerCamelCase` for constant names.
+of preferring `lowerCamelCase` for constant names. -->
 </div>
 
-#### Static methods
+#### 静态方法
+<!-- #### Static methods -->
 
-Static methods (class methods) do not operate on an instance, and thus
-do not have access to `this`. For example:
+静态方法（类方法）是不会作用在实例伤的，因此没发获取`this`。如下所示：
+<!-- Static methods (class methods) do not operate on an instance, and thus
+do not have access to `this`. For example: -->
 
 <?code-excerpt "misc/lib/language_tour/classes/point_with_distance_method.dart"?>
 {% prettify dart %}
@@ -3597,13 +3660,16 @@ void main() {
 {% endprettify %}
 
 <div class="alert alert-info" markdown="1">
-**Note:**
+**注意：**
+在定义常见的或者广泛使用的工具函数时，考虑使用顶级top-level函数，而不是静态方法。
+<!-- **Note:**
 Consider using top-level functions, instead of static methods, for
-common or widely used utilities and functionality.
+common or widely used utilities and functionality. -->
 </div>
 
-You can use static methods as compile-time constants. For example, you
-can pass a static method as a parameter to a constant constructor.
+您可以使用静态方法作为编译时常量。举个例子，您可以把静态方法作为参数传入常量构造函数中。
+<!-- You can use static methods as compile-time constants. For example, you
+can pass a static method as a parameter to a constant constructor. -->
 
 
 ## Generics
