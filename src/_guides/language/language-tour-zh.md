@@ -3672,42 +3672,54 @@ common or widely used utilities and functionality. -->
 can pass a static method as a parameter to a constant constructor. -->
 
 
-## Generics
+## 泛型 Generics
 
-If you look at the API documentation for the basic array type,
+如果您看过了最基本的[列表（数组）类型 List][List]的API文档，您应该看到了实际上的类型是`List<E>`。
+这个\<...\>符号标记了一个被称为*泛型（generic）*的，也被称为*参数化（parameterized）*的类型，
+这种类型有正式的参数类型。根据规范，类型变量有个单字母的名称，比如 E，T，S，K和V。
+<!-- If you look at the API documentation for the basic array type,
 [List,][List] you’ll see that the
 type is actually `List<E>`. The \<...\> notation marks List as a
 *generic* (or *parameterized*) type—a type that has formal type
 parameters. By convention, type variables have single-letter names, such
-as E, T, S, K, and V.
+as E, T, S, K, and V. -->
 
 
-### Why use generics?
+### 为什么要用泛型？
+<!-- ### Why use generics? -->
 
-Generics are often required for type safety, but they have more benefits
-than just allowing your code to run:
+泛型通常被用来确保类型安全，但他们除了使您的代码可以运行之外，其实还有其他的好处：
+<!-- Generics are often required for type safety, but they have more benefits
+than just allowing your code to run: -->
 
-* Properly specifying generic types results in better generated code.
-* You can use generics to reduce code duplication.
+* 定义合适的泛型会生成出更好的代码
+<!-- * Properly specifying generic types results in better generated code. -->
+* 您可以使用泛型来减少重复的代码
+<!-- * You can use generics to reduce code duplication. -->
 
-If you intend for a list to contain only strings, you can
+如果您有意使一个列表只可包含string，那么您可以声明它为`List<String>`（被读作“字符串列表”）。
+通过这种方法，您、您的程序员同伴、还有您的工具就可以在您给这个列表传入非string值时意识到有错
+误发生。如下是这样的一个例子：
+<!-- If you intend for a list to contain only strings, you can
 declare it as `List<String>` (read that as “list of string”). That way
 you, your fellow programmers, and your tools can detect that assigning a non-string to
-the list is probably a mistake. Here’s an example:
+the list is probably a mistake. Here’s an example: -->
 
 {:.fails-sa}
 <?code-excerpt "misc/lib/language_tour/generics/misc.dart (why-generics)"?>
 {% prettify dart %}
 var names = new List<String>();
 names.addAll(['Seth', 'Kathy', 'Lars']);
-names.add(42); // Error
+names.add(42); // 报错
 {% endprettify %}
 
-Another reason for using generics is to reduce code duplication.
+另外一个理由是减少重复的代码。泛型是您可以分享一个接口，并在多个类型中实现它，而且还是在
+不影响有利的静态分析的情况下。举个例子，比如说您新建了一个用来缓存某个对象的接口：
+<!-- Another reason for using generics is to reduce code duplication.
 Generics let you share a single interface and implementation between
 many types, while still taking advantage of static
 analysis. For example, say you create an interface for
-caching an object:
+caching an object: -->
 
 <?code-excerpt "misc/lib/language_tour/generics/cache.dart (ObjectCache)"?>
 {% prettify dart %}
@@ -3717,8 +3729,9 @@ abstract class ObjectCache {
 }
 {% endprettify %}
 
-You discover that you want a string-specific version of this interface,
-so you create another interface:
+您发现您需要一个string类型的此接口，于是您创建了另一个接口：
+<!-- You discover that you want a string-specific version of this interface,
+so you create another interface: -->
 
 <?code-excerpt "misc/lib/language_tour/generics/cache.dart (StringCache)"?>
 {% prettify dart %}
@@ -3728,11 +3741,13 @@ abstract class StringCache {
 }
 {% endprettify %}
 
-Later, you decide you want a number-specific version of this
-interface... You get the idea.
+再然后您发现您需要一个number类型的此接口。。。您应该明白这里的意思了。
+<!-- Later, you decide you want a number-specific version of this
+interface... You get the idea. -->
 
-Generic types can save you the trouble of creating all these interfaces.
-Instead, you can create a single interface that takes a type parameter:
+泛型可以使您避免这样的要创建多个接口的麻烦。使用泛型，您只需要创建一个有类型参数的接口：
+<!-- Generic types can save you the trouble of creating all these interfaces.
+Instead, you can create a single interface that takes a type parameter: -->
 
 <?code-excerpt "misc/lib/language_tour/generics/cache.dart (Cache)"?>
 {% prettify dart %}
@@ -3742,18 +3757,22 @@ abstract class Cache<T> {
 }
 {% endprettify %}
 
-In this code, T is the stand-in type. It’s a placeholder that you can
-think of as a type that a developer will define later.
+在这个代码中，T是一个占位类型。您可以把它想成开发者会在之后定义的类型。
+<!-- In this code, T is the stand-in type. It’s a placeholder that you can
+think of as a type that a developer will define later. -->
 
 
-### Using collection literals
+### 使用集合-collection字面量
+<!-- ### Using collection literals -->
 
-List and map literals can be parameterized. Parameterized literals are
+列表（List）和字典（map）是可以被参数化的。参数化字面量和您之前看到的字面量是一样的，
+除了您需要在括号前给List增加<code>&lt;<em>type</em>></code>和给map增加<code>&lt;<em>keyType</em>, <em>valueType</em>></code>。这是一些例子：
+<!-- List and map literals can be parameterized. Parameterized literals are
 just like the literals you’ve already seen, except that you add
 <code>&lt;<em>type</em>></code> (for lists) or
 <code>&lt;<em>keyType</em>, <em>valueType</em>></code> (for maps)
 before the opening bracket. Here
-is example of using typed literals:
+is example of using typed literals: -->
 
 <?code-excerpt "misc/lib/language_tour/generics/misc.dart (collection-literals)"?>
 {% prettify dart %}
@@ -3765,11 +3784,12 @@ var pages = <String, String>{
 };
 {% endprettify %}
 
+### 和构造函数配合使用泛型
+<!-- ### Using parameterized types with constructors -->
 
-### Using parameterized types with constructors
-
-To specify one or more types when using a constructor, put the types in
-angle brackets (`<...>`) just after the class name. For example:
+要在构造函数中确定一个或者多个类型，在类名后的`<...>`中放入需要的类型。如下所示：
+<!-- To specify one or more types when using a constructor, put the types in
+angle brackets (`<...>`) just after the class name. For example: -->
 
 <?code-excerpt "misc/test/language_tour/generics_test.dart (constructor-1)"?>
 {% prettify dart %}
@@ -3778,8 +3798,9 @@ names.addAll(['Seth', 'Kathy', 'Lars']);
 var nameSet = new Set<String>.from(names);
 {% endprettify %}
 
-The following code creates a map that has integer keys and values of
-type View:
+下面的代码创建了一个有integer作为key，View作为值的map：
+<!-- The following code creates a map that has integer keys and values of
+type View: -->
 
 <?code-excerpt "misc/test/language_tour/generics_test.dart (constructor-2)"?>
 {% prettify dart %}
@@ -3787,11 +3808,14 @@ var views = new Map<int, View>();
 {% endprettify %}
 
 
-### Generic collections and the types they contain
+### 泛型集合和他们所包含的类型
+<!-- ### Generic collections and the types they contain -->
 
-Dart generic types are *reified*, which means that they carry their type
+Dart的泛型是*真实的 reified*，这意味着在运行时，泛型是包含它们的类型信息的。举个例子，您可以
+在一个集合中测试它的类型：
+<!-- Dart generic types are *reified*, which means that they carry their type
 information around at runtime. For example, you can test the type of a
-collection:
+collection: -->
 
 <?code-excerpt "misc/test/language_tour/generics_test.dart (generic-collections)"?>
 {% prettify dart %}
@@ -3801,18 +3825,23 @@ print(names is List<String>); // true
 {% endprettify %}
 
 <div class="alert alert-info" markdown="1">
-**Note:**
+**注意：**
+与之相反，Java中的泛型是*擦除的erasure*，这意味着泛型参数在运行时是被移除的。在Java中，
+您可以测试一个对象是否是List，但你不能知道它是否是`List<String>`。
+<!-- **Note:**
 In contrast, generics in Java use *erasure*, which means that generic
 type parameters are removed at runtime. In Java, you can test whether
-an object is a List, but you can’t test whether it’s a `List<String>`.
+an object is a List, but you can’t test whether it’s a `List<String>`. -->
 </div>
 
 
-### Restricting the parameterized type
+### 限定泛型的类型参数
+<!-- ### Restricting the parameterized type -->
 
-When implementing a generic type,
+当实现一个泛型时，您也许希望限定它可用的类型。您可以使用`extends`关键词：
+<!-- When implementing a generic type,
 you might want to limit the types of its parameters.
-You can do this using `extends`.
+You can do this using `extends`. -->
 
 <?code-excerpt "misc/lib/language_tour/generics/base_class.dart" replace="/extends SomeBaseClass(?=. \{)/[!$&!]/g"?>
 {% prettify dart %}
@@ -3824,7 +3853,8 @@ class Foo<T [!extends SomeBaseClass!]> {
 class Extender extends SomeBaseClass {...}
 {% endprettify %}
 
-It's OK to use `SomeBaseClass` or any of its subclasses as generic argument:
+如此一来，您就只能使用`SomeBaseClass`类或者它的子类作为泛型的类型参数：
+<!-- It's OK to use `SomeBaseClass` or any of its subclasses as generic argument: -->
 
 <?code-excerpt "misc/test/language_tour/generics_test.dart (SomeBaseClass-ok)" replace="/Foo.\w+./[!$&!]/g"?>
 {% prettify dart %}
@@ -3832,7 +3862,8 @@ var someBaseClassFoo = new [!Foo<SomeBaseClass>!]();
 var extenderFoo = new [!Foo<Extender>!]();
 {% endprettify %}
 
-It's also OK to specify no generic argument:
+您可以不填入泛型的类型参数：
+<!-- It's also OK to specify no generic argument: -->
 
 <?code-excerpt "misc/test/language_tour/generics_test.dart (no-generic-arg-ok)" replace="/expect\((.*?).toString\(\), .(.*?).\);/print($1); \/\/ $2/g"?>
 {% prettify dart %}
@@ -3840,7 +3871,8 @@ var foo = new Foo();
 print(foo); // Instance of 'Foo<SomeBaseClass>'
 {% endprettify %}
 
-Specifying any non-`SomeBaseClass` type results in an error:
+但是填入一个不是`SomeBaseClass`类的类型会导致一个错误：
+<!-- Specifying any non-`SomeBaseClass` type results in an error: -->
 
 {:.fails-sa}
 <?code-excerpt "misc/lib/language_tour/generics/misc.dart (Foo-Object-error)" replace="/Foo.\w+./[!$&!]/g"?>
@@ -3849,67 +3881,87 @@ var foo = new [!Foo<Object>!]();
 {% endprettify %}
 
 
-### Using generic methods
+### 使用泛型方法
+<!-- ### Using generic methods -->
 
-Initially, Dart's generic support was limited to classes.
-A newer syntax, called _generic methods_, allows type arguments on methods and functions:
+在一开始，Dart对类的泛型支持是有限的。但现在，一个新的语法，_generic methods_,允许在方法和函数
+中使用类型参数：
+<!-- Initially, Dart's generic support was limited to classes.
+A newer syntax, called _generic methods_, allows type arguments on methods and functions: -->
 
 <!-- https://dartpad.dartlang.org/a02c53b001977efa4d803109900f21bb -->
 <!-- https://gist.github.com/a02c53b001977efa4d803109900f21bb -->
 <?code-excerpt "misc/test/language_tour/generics_test.dart (method)" replace="/<T.(?=\()|T/[!$&!]/g"?>
 {% prettify dart %}
 [!T!] first[!<T>!](List<[!T!]> ts) {
-  // Do some initial work or error checking, then...
+  // 做一些初始化构造或者错误检查，然后。。。
   [!T!] tmp = ts[0];
-  // Do some additional checking or processing...
+  // 做一些额外的检查或者处理
   return tmp;
 }
 {% endprettify %}
 
-Here the generic type parameter on `first` (`<T>`)
-allows you to use the type argument `T` in several places:
+这里在`first` (`<T>`)上的泛型类型参数运行您在如下的地方使用`T`: 
+<!-- Here the generic type parameter on `first` (`<T>`)
+allows you to use the type argument `T` in several places: -->
 
-* In the function's return type (`T`).
+* 方法的返回类型(`T`)
+* 方法参数的类型(`List<T>`)
+* 方法本地变量的类型(`T tmp`)
+<!-- * In the function's return type (`T`).
 * In the type of an argument (`List<T>`).
-* In the type of a local variable (`T tmp`).
+* In the type of a local variable (`T tmp`). -->
 
-For more information about generics, see
-[Using Generic Methods.](https://github.com/dart-lang/sdk/blob/master/pkg/dev_compiler/doc/GENERIC_METHODS.md)
+更多关于泛型的信息，查看[Using Generic Methods。](https://github.com/dart-lang/sdk/blob/master/pkg/dev_compiler/doc/GENERIC_METHODS.md)
+<!-- For more information about generics, see
+[Using Generic Methods.](https://github.com/dart-lang/sdk/blob/master/pkg/dev_compiler/doc/GENERIC_METHODS.md) -->
 
 
-## Libraries and visibility
+## 类库和可访问性
+<!-- ## Libraries and visibility -->
 
-The `import` and `library` directives can help you create a
+`import`和`library`指令可以帮助你创建模块和可复用代码。类库不仅仅提供了API，而且还时
+一个隐私单元：以下划线（\_）起头的标识符是只在类库内部可见的。不管有没有使用`library`
+指令，*Dart程序的每个部分都是一个类库*。。
+<!-- The `import` and `library` directives can help you create a
 modular and shareable code base. Libraries not only provide APIs, but
 are a unit of privacy: identifiers that start with an underscore (\_)
 are visible only inside the library. *Every Dart app is a library*, even
-if it doesn’t use a `library` directive.
+if it doesn’t use a `library` directive. -->
 
-Libraries can be distributed using packages. See
+类库可以被打包发布。查看[Pub Package and Asset Manager](/tools/pub)来了解pub，一
+个Dart SDK自带的包管理器。
+<!-- Libraries can be distributed using packages. See
 [Pub Package and Asset Manager](/tools/pub)
 for information about
-pub, a package manager included in the SDK.
+pub, a package manager included in the SDK. -->
 
 
-### Using libraries
+### 使用类库
+<!-- ### Using libraries -->
 
-Use `import` to specify how a namespace from one library is used in the
-scope of another library.
+使用`import`来确定一个类库在其他类库域中的命名空间（*namespace*）。
+<!-- Use `import` to specify how a namespace from one library is used in the
+scope of another library. -->
 
-For example, Dart web apps generally use the [dart:html][]
-library, which they can import like this:
+举个例子，Dart web 应用基本都会使用[dart:html][]类库，它们会这样引入：
+<!-- For example, Dart web apps generally use the [dart:html][]
+library, which they can import like this: -->
 
 <?code-excerpt "misc/test/language_tour/browser_test.dart (dart-html-import)"?>
 {% prettify dart %}
 import 'dart:html';
 {% endprettify %}
 
-The only required argument to `import` is a URI specifying the
+`import`唯一需要的参数就是一个用来确定类库的URI（Universal Resource Identifier）。
+对于内置类库，URI会有`dart:`这样的一种语法准则。对于其他的类库，您可以使用文件系统的路径，或者
+`package:`这样的语法准则。`package`语法准则确定了由像pub这样的包管理器所提供的类库。举个例子：
+<!-- The only required argument to `import` is a URI specifying the
 library.
 For built-in libraries, the URI has the special `dart:` scheme.
 For other libraries, you can use a file system path or the `package:`
 scheme. The `package:` scheme specifies libraries provided by a package
-manager such as the pub tool. For example:
+manager such as the pub tool. For example: -->
 
 <?code-excerpt "misc/test/language_tour/browser_test.dart (package-import)"?>
 {% prettify dart %}
@@ -3917,18 +3969,24 @@ import 'package:test/test.dart';
 {% endprettify %}
 
 <div class="alert alert-info" markdown="1">
-**Note:**
+**注意：**
+*URI* 是指uniform resource identifier。
+*URL* 是指uniform resource locators，是一种常见的URI。
+<!-- **Note:**
 *URI* stands for uniform resource identifier.
-*URLs* (uniform resource locators) are a common kind of URI.
+*URLs* (uniform resource locators) are a common kind of URI. -->
 </div>
 
 
-#### Specifying a library prefix
+#### 确定一个类库的前缀
+<!-- #### Specifying a library prefix -->
 
-If you import two libraries that have conflicting identifiers, then you
+如果您引入了两个有相互冲突的标识符的类库，那么您需要为其中一个，或者全部的两个类库确定前缀。
+举例来说，如果library1和library2都有一个Element类，那么您的代码需要和下面的代码一样：
+<!-- If you import two libraries that have conflicting identifiers, then you
 can specify a prefix for one or both libraries. For example, if library1
 and library2 both have an Element class, then you might have code like
-this:
+this: -->
 
 <?code-excerpt "misc/lib/language_tour/libraries/import_as.dart" replace="/(lib\d)\.dart/package:$1\/$&/g"?>
 {% prettify dart %}
@@ -3942,43 +4000,53 @@ Element element1 = new Element();
 lib2.Element element2 = new lib2.Element();
 {% endprettify %}
 
-#### Importing only part of a library
+#### 引用类库中的部分代码
+<!-- #### Importing only part of a library -->
 
-If you want to use only part of a library, you can selectively import
-the library. For example:
+如果您只想使用类库中的部分代码，您可以选择性地引入类库，如下例：
+<!-- If you want to use only part of a library, you can selectively import
+the library. For example: -->
 
 <?code-excerpt "misc/lib/language_tour/libraries/show_hide.dart" replace="/(lib\d)\.dart/package:$1\/$&/g"?>
 {% prettify dart %}
-// Import only foo.
+// 只引入foo
 import 'package:lib1/lib1.dart' show foo;
 
-// Import all names EXCEPT foo.
+// 引入除了foo的其他代码
 import 'package:lib2/lib2.dart' hide foo;
 {% endprettify %}
 
 <a id="deferred-loading"></a>
-#### Lazily loading a library
+#### 懒加载类库
+<!-- #### Lazily loading a library -->
 
-_Deferred loading_ (also called _lazy loading_)
+_延迟加载_(也被叫做 _懒加载_)允许应用只在需要的时候再引入一个类库。
+您可以在下列的情况下使用这个功能：
+<!-- _Deferred loading_ (also called _lazy loading_)
 allows an application to load a library on demand,
 if and when it's needed.
-Here are some cases when you might use deferred loading:
+Here are some cases when you might use deferred loading: -->
 
-* To reduce an app's initial startup time.
+* 减少app首次加载的时间。
+* 进行A/B测试的时候，比如尝试不同的替代算法。
+* 引入很少用到的函数功能，比如一些可选的界面和对话框。
+<!-- * To reduce an app's initial startup time.
 * To perform A/B testing—trying out
   alternative implementations of an algorithm, for example.
-* To load rarely used functionality, such as optional screens and dialogs.
+* To load rarely used functionality, such as optional screens and dialogs. -->
 
-To lazily load a library, you must first
-import it using `deferred as`.
+您必须使用`deferred as`来引用懒加载的类库。
+<!-- To lazily load a library, you must first
+import it using `deferred as`. -->
 
 <?code-excerpt "misc/lib/language_tour/libraries/greeter.dart (import)" replace="/hello\.dart/package:greetings\/$&/g"?>
 {% prettify dart %}
 import 'package:greetings/hello.dart' deferred as hello;
 {% endprettify %}
 
-When you need the library, invoke
-`loadLibrary()` using the library's identifier.
+然后在需要使用类库的时候，使用类库的标识符来调用`loadLibrary()`方法。
+<!-- When you need the library, invoke
+`loadLibrary()` using the library's identifier. -->
 
 <?code-excerpt "misc/lib/language_tour/libraries/greeter.dart (loadLibrary)"?>
 {% prettify dart %}
@@ -3988,34 +4056,49 @@ Future greet() async {
 }
 {% endprettify %}
 
-In the preceding code,
+在上面的代码中，`await`关键词会使当前进程在类库加载完成前暂停运行。更多的信息，
+查看[异步支持 - asynchrony support](#asynchrony-support)。
+<!-- In the preceding code,
 the `await` keyword pauses execution until the library is loaded.
 For more information about `async` and `await`,
-see [asynchrony support](#asynchrony-support).
+see [asynchrony support](#asynchrony-support). -->
 
-You can invoke `loadLibrary()` multiple times on a library without problems.
-The library is loaded only once.
+您可以对同一个类库多次执行`loadLibrary()`方法。这不会有任何问题，因为类库只会被加载一次。
+<!-- You can invoke `loadLibrary()` multiple times on a library without problems.
+The library is loaded only once. -->
 
-Keep in mind the following when you use deferred loading:
+在使用延时加载时请注意：
+<!-- Keep in mind the following when you use deferred loading: -->
 
-* A deferred library's constants aren't constants in the importing file.
-  Remember, these constants don't exist until the deferred library is loaded.
-* You can't use types from a deferred library in the importing file.
+* 一个延时加载的类库中的常量不是常量。在延时加载类库加载完成前，这些常量时不存在的。
+<!-- * A deferred library's constants aren't constants in the importing file.
+  Remember, these constants don't exist until the deferred library is loaded. -->
+* 您不可以在引入类库的文件中使用异步类库的类型。如果一定要这样，您可以单独创建一个
+接口，并在引入异步类库的文件和异步类库中都另外引入这个接口。
+<!-- * You can't use types from a deferred library in the importing file.
   Instead, consider moving interface types to a library imported by
-  both the deferred library and the importing file.
-* Dart implicitly inserts `loadLibrary()` into the namespace that you define
+  both the deferred library and the importing file. -->
+* 当您使用<code>deferred as <em>namespace</em></code>，时，Dart会自动在命名空间内
+引入`loadLibrary()`方法。`loadLibrary()`会返回一个[Future](/guides/libraries/library-tour#future)。
+<!-- * Dart implicitly inserts `loadLibrary()` into the namespace that you define
   using <code>deferred as <em>namespace</em></code>.
-  The `loadLibrary()` function returns a [Future](/guides/libraries/library-tour#future).
+  The `loadLibrary()` function returns a [Future](/guides/libraries/library-tour#future). -->
 
-### Implementing libraries
+### 实现类库
+<!-- ### Implementing libraries -->
 
-See
+查看[Create Library Packages](/guides/libraries/create-library-packages)来
+了解有关如何实现自己的类库包，本文包含了如下内容：
+<!-- See
 [Create Library Packages](/guides/libraries/create-library-packages)
-for advice on how to implement a library package, including:
+for advice on how to implement a library package, including: -->
 
-* How to organize library source code.
+* 如何组织类库的源代码。
+* 如何使用`export`指令。
+* 在什么时候使用`part`指令。
+<!-- * How to organize library source code.
 * How to use the `export` directive.
-* When to use the `part` directive.
+* When to use the `part` directive. -->
 
 
 <a id="asynchrony"></a>
