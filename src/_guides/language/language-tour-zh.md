@@ -3069,8 +3069,8 @@ class Logger {
 Factory constructors have no access to `this`. -->
 </div>
 
-要调用一个工厂构造函数，您需要使用`new`关键词：
-<!-- To invoke a factory constructor, you use the `new` keyword: -->
+要调用一个工厂构造函数，您只用和使用普通的构造函数一样即可：
+<!-- Invoke a factory constructor just like you would any other constructor: -->
 
 <?code-excerpt "misc/lib/language_tour/classes/logger.dart (logger)"?>
 {% prettify dart %}
